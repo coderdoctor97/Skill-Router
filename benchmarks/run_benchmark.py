@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Routing benchmark runner for Skill_by_Satya (version-agnostic: works against
+Routing benchmark runner for Skill Router (version-agnostic: works against
 the V1 and V2 routers because it only calls the public `route()` entry point
 and reads whatever result shape the router emits).
 

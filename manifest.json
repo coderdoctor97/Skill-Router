@@ -2,7 +2,7 @@
   "name": "skill-router",
   "description": "A meta-skill that installs and maintains a deterministic two-stage skill router (discovery, routing, command resolution) in an agent repository. Use when the user wants to set up the routing environment, synchronize the registry after skills change, route a request to the right skill and command, or benchmark routing quality.",
   "keywords": ["skill router", "skill routing", "routing", "bootstrap", "registry", "routing manifest", "meta-skill", "skill environment", "sync", "discovery", "two-stage", "ambiguous", "benchmark"],
-  "aliases": ["Skill_by_Satya", "skill router", "routing meta-skill", "satya skill"],
+  "aliases": ["skill router", "routing meta-skill"],
   "capabilities": ["bootstrap a skill routing environment", "establish a skill router", "synchronize the skill registry and routing manifest", "route requests with three decisions route ambiguous no_route", "build minimal multi-skill plans", "detect corpus to routing manifest drift", "run the gold-set routing benchmark"],
   "use_when": ["set up the routing environment", "route a request to the right skill", "sync the skill registry", "benchmark routing quality", "install the routing meta-skill"],
   "not_when": ["execute the routed task itself", "write a specific skill body"],

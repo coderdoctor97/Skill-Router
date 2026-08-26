@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Regression tests for the Skill_by_Satya V2 router.
+Regression tests for the Skill Router.
 
 Run:  python3 tests/run_tests.py
 or:   python3 -m unittest discover -s tests -p "test_*.py"

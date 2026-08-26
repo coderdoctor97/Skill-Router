@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-skill.py — Skill_by_Satya V2 Portable Skill Router
+skill.py — Skill Router V2 Portable Skill Router
 
 V2 routing mission (unchanged from V1): given a large installed skill library,
 identify the most appropriate skill(s) for a user's request WITHOUT reading the
@@ -80,7 +80,7 @@ CACHE_FILENAME = ".route-cache.json"
 REGISTRY_SCHEMA_VERSION = 1
 ROUTING_MANIFEST_SCHEMA_VERSION = 2
 
-CONTRACT_MARKER = "<!-- Skill_by_Satya:routing-contract -->"
+CONTRACT_MARKER = "<!-- Skill Router:routing-contract -->"
 
 # --------------------------------------------------------------------------
 # Config (configurable; override with SKILL_ROUTER_CONFIG=<path-to-json>)
@@ -1223,7 +1223,7 @@ def validate_all(root: Path | None = None) -> dict:
 def _contract_section() -> str:
     return (
         f"{CONTRACT_MARKER}\n"
-        "# Skill Router & Dynamic Skill Registry (Skill_by_Satya V2)\n"
+        "# Skill Router V2\n"
         "\n"
         "This repository has a two-stage skill router. `skill.py` reads a\n"
         "compact generated routing manifest, filters candidates cheaply, ranks\n"
@@ -1426,7 +1426,7 @@ def doctor(root: Path | None = None) -> dict:
 # --------------------------------------------------------------------------
 def _usage() -> str:
     return (
-        "skill.py — Portable Skill Router V2 (Skill_by_Satya)\n\n"
+        "skill.py — Portable Skill Router V2\n\n"
         "usage:\n"
         "  python3 skill.py bootstrap [--root DIR] [--force]    establish the routing environment\n"
         "  python3 skill.py sync [--root DIR]                   idempotent rebuild registry + routing manifest + validate\n"
