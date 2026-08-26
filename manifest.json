@@ -1,5 +1,5 @@
 {
-  "name": "Skill_by_Satya",
+  "name": "skill-router",
   "description": "A meta-skill that installs and maintains a deterministic two-stage skill router (discovery, routing, command resolution) in an agent repository. Use when the user wants to set up the routing environment, synchronize the registry after skills change, route a request to the right skill and command, or benchmark routing quality.",
   "keywords": ["skill router", "skill routing", "routing", "bootstrap", "registry", "routing manifest", "meta-skill", "skill environment", "sync", "discovery", "two-stage", "ambiguous", "benchmark"],
   "aliases": ["Skill_by_Satya", "skill router", "routing meta-skill", "satya skill"],
@@ -57,6 +57,12 @@
       "syntax": "python3 skill.py benchmark [--gold PATH]",
       "description": "Run the gold-set benchmark in-process and report decision accuracy.",
       "keywords": ["benchmark", "gold set", "evaluate", "metrics"]
+    },
+    {
+      "name": "doctor",
+      "syntax": "python3 skill.py doctor [--root DIR]",
+      "description": "Diagnose router files, generated metadata, and manifest drift without changing the filesystem.",
+      "keywords": ["doctor", "diagnose", "health", "installation", "verify"]
     }
   ]
 }
