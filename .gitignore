@@ -5,3 +5,8 @@ htmlcov/
 .tox/
 skill-registry/.route-cache.json
 benchmark-results/
+.eggs/
+*.egg-info/
+dist/
+build/
+wheels/
