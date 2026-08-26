@@ -17,15 +17,28 @@ All notable changes to Skill Router are documented here. The format is based on
 - `SECURITY.md` — Security policy and vulnerability reporting process
 - `CODE_OF_CONDUCT.md` — Contributor Covenant Code of Conduct
 - `docs/` — Documentation structure (architecture, routing, configuration, agents, benchmarking, troubleshooting, development)
+- `benchmark-baseline.json` — Saved baseline for regression detection
+- `--save-baseline`, `--baseline`, `--gate` flags to benchmark runner
+- `--scaling` mode with preset corpus sizes (16/100/500/1000/5000)
+- `ambiguity_recall`, `latency_p95_ms`, `metadata_reduction_pct` metrics
+- `pyproject.toml` — Standard Python packaging
+- `src/skill_router/__init__.py` — Packaging shim for pip install
+- `models.py` — Extracted model layer (Skill, load_manifest)
 
 ### Changed
 - Branding unified to "Skill Router" throughout public-facing files
 - `manifest.json` aliases cleaned up (removed "Skill_by_Satya" alias)
 - `CONTRACT_MARKER` updated to `<!-- Skill Router:routing-contract -->`
-- `SKILL.md` references `documentions.md` instead of missing `UPGRADE-REPORT.md`
 - `CONTRIBUTING.md` expanded with routing behavior change guidelines
-- `.gitignore` expanded with `.coverage`, `htmlcov/`, `.tox/`, `benchmark-results/`
+- `.gitignore` expanded with `.coverage`, `htmlcov/`, `.tox/`, `benchmark-results/`, `*.egg-info/`, `dist/`, `build/`, `wheels/`
 - Windows path test failure fixed in `test_install.py`
+- Benchmark accuracy language scoped to reflect gold-set limitations
+- Troubleshooting table entry for benchmark accuracy clarified
+- `skill.py` built-in benchmark includes per-case latency and p95 reporting
+- Scaling results documented with honest interpretation
+
+### Fixed
+- Test failure on Windows due to path separator in `test_install.py`
 
 ## [2.0.0] — 2025-01-15
 

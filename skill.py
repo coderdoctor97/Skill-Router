@@ -1429,7 +1429,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{len(skills)} skills")
     elif cmd == "route":
         if not a["request"]:
-            print("error: route needs a request string", file=sys.stderr)
+            print("error: 'route' needs a request string.", file=sys.stderr)
+            print("  usage: python3 skill.py route \"<your request>\" --root <path>",
+                  file=sys.stderr)
             return 2
         result = route(a["request"], root=a["root"], debug=a["debug"],
                        use_cache=not a["no_cache"])
