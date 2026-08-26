@@ -1,0 +1,68 @@
+{
+  "name": "browser-automation",
+  "description": "Browser automation and end-to-end testing with Playwright: flows, selectors, and e2e scripts.",
+  "keywords": [
+    "playwright",
+    "e2e",
+    "browser automation",
+    "test flow"
+  ],
+  "aliases": [
+    "browser-automation",
+    "playwright",
+    "e2e testing"
+  ],
+  "capabilities": [
+    "e2e testing",
+    "playwright scripting",
+    "browser flows"
+  ],
+  "use_when": [
+    "end to end tests",
+    "playwright script",
+    "browser automation",
+    "e2e test flow"
+  ],
+  "not_when": [
+    "unit tests",
+    "accessibility audit",
+    "css styling"
+  ],
+  "objects": [
+    "browser",
+    "e2e",
+    "page",
+    "test",
+    "app"
+  ],
+  "actions": [
+    "automate",
+    "test",
+    "script",
+    "run"
+  ],
+  "intents": {
+    "e2e": [
+      "end to end tests",
+      "playwright script",
+      "browser automation"
+    ]
+  },
+  "conflicts_with": [],
+  "commands": [
+    {
+      "name": "e2e-flow",
+      "syntax": "e2e-flow <scenario>",
+      "description": "Script a browser e2e flow.",
+      "keywords": [
+        "e2e",
+        "playwright",
+        "browser"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

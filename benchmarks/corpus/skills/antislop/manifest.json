@@ -1,0 +1,80 @@
+{
+  "name": "antislop",
+  "description": "Strips AI-slop language from any text: cliche phrases like delve, seamless, tapestry, elevate, plus filler and buzzwords.",
+  "keywords": [
+    "antislop",
+    "de-slop",
+    "ai cliches",
+    "buzzwords",
+    "filler words",
+    "slop"
+  ],
+  "aliases": [
+    "antislop",
+    "de-slop",
+    "deslop",
+    "ai slop removal"
+  ],
+  "capabilities": [
+    "remove ai slop phrases",
+    "strip words like delve and seamless",
+    "detect cliches",
+    "tighten wordy text",
+    "remove slop words like delve and seamless"
+  ],
+  "use_when": [
+    "remove ai cliches",
+    "de-slop this text",
+    "cut filler words",
+    "remove buzzwords",
+    "clean up cliches",
+    "make this sound less like chatgpt",
+    "clean up slop words"
+  ],
+  "not_when": [
+    "proofread for grammar",
+    "evaluate writing quality",
+    "rewrite for marketing"
+  ],
+  "objects": [
+    "text",
+    "prose",
+    "writing",
+    "copy",
+    "email"
+  ],
+  "actions": [
+    "remove",
+    "strip",
+    "cut",
+    "clean",
+    "de-slop",
+    "deslop"
+  ],
+  "intents": {
+    "deslop": [
+      "remove ai cliches",
+      "clean up cliches",
+      "strip slop words",
+      "de-slop this text",
+      "clean up slop words"
+    ]
+  },
+  "conflicts_with": [],
+  "commands": [
+    {
+      "name": "de-slop",
+      "syntax": "de-slop <text>",
+      "description": "Remove AI-slop phrases from text.",
+      "keywords": [
+        "slop",
+        "cliches",
+        "buzzwords"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

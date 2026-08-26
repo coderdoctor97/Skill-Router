@@ -1,0 +1,78 @@
+{
+  "name": "design-audit",
+  "description": "Frontend design audit: visual design, UX, responsiveness, and design-system consistency. Reviews how an interface looks and feels.",
+  "keywords": [
+    "design audit",
+    "ui review",
+    "visual design",
+    "ux",
+    "responsive"
+  ],
+  "aliases": [
+    "design-audit",
+    "ui review",
+    "frontend design audit",
+    "design review"
+  ],
+  "capabilities": [
+    "visual design review",
+    "ux critique",
+    "responsive design check",
+    "design system consistency"
+  ],
+  "use_when": [
+    "audit my frontend",
+    "review the ui design",
+    "visual design critique",
+    "ux review of my app",
+    "design system review",
+    "ux review"
+  ],
+  "not_when": [
+    "write css from scratch",
+    "set up the build",
+    "backend architecture"
+  ],
+  "objects": [
+    "frontend",
+    "ui",
+    "design system",
+    "landing page",
+    "app",
+    "interface",
+    "website"
+  ],
+  "actions": [
+    "audit",
+    "review",
+    "critique",
+    "evaluate"
+  ],
+  "intents": {
+    "design_review": [
+      "audit the ui",
+      "review the frontend design",
+      "visual design critique",
+      "ux review"
+    ]
+  },
+  "conflicts_with": [
+    "frontend-build"
+  ],
+  "commands": [
+    {
+      "name": "audit-ui",
+      "syntax": "audit-ui <url|screenshots>",
+      "description": "Audit a frontend for design and UX issues.",
+      "keywords": [
+        "design",
+        "ux",
+        "visual"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

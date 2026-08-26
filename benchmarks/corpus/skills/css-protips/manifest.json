@@ -1,0 +1,72 @@
+{
+  "name": "css-protips",
+  "description": "CSS tips and patterns: layout, flexbox and grid, responsive styling, and modern CSS for components and pages.",
+  "keywords": [
+    "css",
+    "flexbox",
+    "grid",
+    "styling",
+    "layout"
+  ],
+  "aliases": [
+    "css-protips",
+    "css tips",
+    "styling help"
+  ],
+  "capabilities": [
+    "css layout patterns",
+    "responsive styling",
+    "modern css techniques"
+  ],
+  "use_when": [
+    "css layout help",
+    "style this component",
+    "flexbox or grid tips",
+    "write css for a page",
+    "responsive styling"
+  ],
+  "not_when": [
+    "accessibility audit",
+    "design critique",
+    "build tooling"
+  ],
+  "objects": [
+    "css",
+    "layout",
+    "component",
+    "page",
+    "stylesheet"
+  ],
+  "actions": [
+    "style",
+    "write",
+    "fix",
+    "lay out"
+  ],
+  "intents": {
+    "css_help": [
+      "css layout help",
+      "style this component",
+      "css tips"
+    ]
+  },
+  "conflicts_with": [
+    "design-audit"
+  ],
+  "commands": [
+    {
+      "name": "css-tips",
+      "syntax": "css-tips <question>",
+      "description": "Give CSS layout and styling tips.",
+      "keywords": [
+        "css",
+        "flexbox",
+        "grid"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

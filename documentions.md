@@ -729,3 +729,133 @@ opt-in upgrades, never the base.
 8. Seed manifests with user-shaped phrases, not just noun phrases.
 9. Bootstrap conservatively: inspect, merge, preserve, never overwrite.
 10. Idempotent sync: run twice, same result, no corruption.
+
+---
+
+## 5. V2 upgrade (two-stage router)
+
+V2 replaced V1's single weighted bag-of-signals pass with a two-stage router
+(cheap candidate filtering, then structured semantic ranking) over a compact
+generated routing manifest. The full comparison, benchmark, and measurements
+are in `UPGRADE-REPORT.md`. This section records what actually failed during
+the V2 build — the regressions that became permanent tests.
+
+### V2-P1. Conflict penalty fired against non-competitors
+
+```
+Problem
+  "write a readme for our new api client" routed ambiguous: docs-writing was
+  penalized `conflict:copywriting` even though copywriting had confidence ~0.13
+  (only its action 'write' matched).
+
+Why
+  The conflict rule penalized on *any* overlapping matched signal. docs-writing
+  conflicts_with copywriting, and both matched the action 'write' — but
+  copywriting was not a real competitor for this request.
+
+Fix
+  Two-pass ranking: compute raw confidences first; then apply a conflict
+  penalty only when the conflicting skill is a real competitor (confidence >=
+  max(0.30, mine - 0.10)) AND shares task-identity dimensions.
+
+Lesson
+  A conflict is about competition for the same task, not about shared verbs.
+```
+
+### V2-P2. Shared generic actions blocked multi-skill plans
+
+```
+Problem
+  "write a readme and draft the marketing blurb for the api" routed to a single
+  skill: docs-writing and copywriting were treated as the SAME task because
+  both matched the action 'write' — so the disjointness test rejected the plan
+  and the conflict rule penalized docs-writing.
+
+Why
+  Task identity was defined over objects, intents, triggers AND actions. 'write'
+  is a generic "how"; it says nothing about what is being written.
+
+Fix
+  `_match_dimensions` now tracks only the WHAT and WHY (objects, intents,
+  triggers), never the generic HOW (actions). Two skills may both 'write' yet
+  handle different objects.
+```
+
+### V2-P3. Not_when hard-disqualification broke mixed requests
+
+```
+Problem
+  "review this pr for complexity and check the new endpoint for vulnerabilities"
+  never selected security-review: its not_when contains 'complexity review',
+  and the request contains the words 'complexity review' — hard disqualify.
+
+Why
+  The negative-trigger gate was request-wide and all-or-nothing. A mixed
+  request legitimately involves two skills with different boundaries.
+
+Fix
+  A not_when match disqualifies only when the skill has no strong positive
+  anchor of its own; with a strong positive anchor it becomes a soft penalty
+  (x0.6) so the skill can still join a multi-skill plan.
+```
+
+### V2-P4. Explicit skill-name calls and the adversarial trap
+
+```
+Problem
+  Adding an explicit-call bonus ("the user literally named the skill") made
+  "make my code impeccable" and "run a hallmark check on my react component"
+  surface the WRONG skills: the name/alias matched, and the bonus was anchored
+  by a generic action ('check').
+
+Why
+  The anchor accepted any signal, including generic actions and broad
+  capability claims. 'hallmark check' names the prose skill but the object is
+  a react component — the object mismatch (0.25) could not outweigh a 0.45
+  bonus.
+
+Fix
+  The explicit bonus requires a task-identity anchor (object / intent /
+  domain) at >= 0.5. A name match with no supporting anchor is dismissed —
+  the word is likely used as an ordinary term ('make my code impeccable').
+```
+
+### V2-P5. Weak partial overlaps earned too much credit
+
+```
+Problem
+  "run a hallmark check on my react component" gave css-protips partial credit
+  because one shared token ('component') overlapped 'style this component'.
+
+Fix
+  `credit_ratio`: a multi-token phrase needs at least two tokens present to
+  earn partial credit. A single shared token is too weak a signal to score.
+```
+
+### V2-P6. Object-mismatch penalty was too eager
+
+```
+Problem
+  "review this pr for complexity and check the new endpoint for vulnerabilities"
+  penalized ponytail (`object_mismatch:endpoint`) even though the request's pr
+  IS a ponytail object.
+
+Fix
+  The mismatch penalty applies only when NONE of the request's concrete objects
+  are covered by the skill — an entirely foreign object domain — not when the
+  skill covers one of several objects.
+```
+
+### V2-P7. Ordering of multi-skill plans by trigger text failed
+
+```
+Problem
+  "rewrite the landing page copy, then de-slop it" ordered [antislop,
+  copywriting]: the order hint searched for the literal trigger phrase
+  'write landing page copy', which does not appear in 'rewrite the landing
+  page copy'.
+
+Fix
+  Order by the position of the first matched OBJECT phrase in the request,
+  which is robust to verb prefixes and paraphrases.
+```
