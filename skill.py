@@ -63,6 +63,10 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Ensure the repo root is on sys.path so the models sibling module can be
+# found when skill.py is loaded via importlib (benchmarks, tests, packaging).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 # Import model layer (extracted to models.py; kept here as aliases for
 # backward compatibility with any external imports).
 from models import (  # noqa: E402
