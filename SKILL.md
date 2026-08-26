@@ -1,7 +1,7 @@
 ---
-name: Skill_by_Satya
+name: skill-router
 description: A meta-skill that installs and maintains a deterministic two-stage skill router (discovery, routing, command resolution) in an agent repository. Use when the user wants to set up the routing environment, synchronize the registry after skills change, route a request to the right skill and command, or benchmark routing quality.
-commands: [bootstrap, sync, discover, list, route, validate, benchmark]
+commands: [bootstrap, sync, discover, list, route, validate, doctor, benchmark]
 ---
 
 # Skill_by_Satya V2
