@@ -43,6 +43,11 @@ REGRESSION_THRESHOLDS = {
 
 DEFAULT_BASELINE_PATH = HERE / "benchmark-baseline.json"
 
+# Preset scaling levels (number of skills).  Each level maps to a stress factor
+# applied to the 16-skill corpus.  Values that exceed practical limits are
+# skipped automatically.
+SCALING_LEVELS = [16, 100, 500, 1000, 5000]
+
 
 # --------------------------------------------------------------------------
 # Result parsing: map either result shape to a normalized decision
@@ -351,6 +356,59 @@ def run_benchmark(repo: Path, gold: Path, repeat: int, stress: int,
     return out
 
 
+def run_scaling(repo: Path, gold: Path) -> dict:
+    """Run the benchmark at increasing corpus sizes.
+
+    Returns a dict with scaling rows and a summary table.
+    """
+    corpus = HERE / "corpus" / "skills"
+    base_count = len([d for d in corpus.iterdir() if d.is_dir()])
+    if base_count == 0:
+        print("error: corpus is empty", file=sys.stderr)
+        return {"error": "empty corpus"}
+
+    rows = []
+    for target in SCALING_LEVELS:
+        stress = max(1, target // base_count)
+        actual = base_count * stress
+        print(f"\n--- scaling: {actual} skills (stress={stress}) ---")
+        out = run_benchmark(repo, gold, repeat=1, stress=stress,
+                            json_out=None, save_baseline=False)
+        m = out["metrics"]
+        rows.append({
+            "target_skills": target,
+            "actual_skills": actual,
+            "stress": stress,
+            "decision_accuracy": m["decision_accuracy"],
+            "top1_accuracy": m["top1_accuracy"],
+            "false_route_rate": m["false_route_rate"],
+            "avg_latency_ms": m["avg_latency_ms"],
+            "latency_p95_ms": m["latency_p95_ms"],
+            "avg_metadata_bytes": m["avg_metadata_bytes_per_route"],
+            "metadata_reduction_pct": m["metadata_reduction_pct"],
+        })
+
+    # Print summary table
+    hdr = (
+        f"{'Skills':>8}  {'Acc':>7}  {'Top-1':>7}  "
+        f"{'F.Route':>8}  {'Avg ms':>9}  {'P95 ms':>9}  {'Meta KB':>9}  {'Reduction':>10}"
+    )
+    print(f"\n{hdr}")
+    print("-" * len(hdr))
+    for r in rows:
+        print(
+            f"{r['actual_skills']:>8}  "
+            f"{r['decision_accuracy']:>7.1%}  "
+            f"{r['top1_accuracy']:>7.1%}  "
+            f"{r['false_route_rate']:>8.1%}  "
+            f"{r['avg_latency_ms']:>9.3f}  "
+            f"{r['latency_p95_ms']:>9.3f}  "
+            f"{r['avg_metadata_bytes'] / 1024:>9.1f}  "
+            f"{r['metadata_reduction_pct']:>10.1%}"
+        )
+    return {"base_skills": base_count, "levels": SCALING_LEVELS, "rows": rows}
+
+
 # --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
@@ -369,7 +427,13 @@ def main() -> int:
                     help="path to baseline file for regression comparison")
     ap.add_argument("--gate", action="store_true",
                     help="fail (exit 2) if metrics breach regression thresholds")
+    ap.add_argument("--scaling", action="store_true",
+                    help="run benchmark at 16 / 100 / 500 / 1000 / 5000 skills")
     args = ap.parse_args()
+
+    if args.scaling:
+        out = run_scaling(Path(args.repo), Path(args.gold))
+        return 0 if not out.get("error") else 2
 
     out = run_benchmark(
         Path(args.repo), Path(args.gold), args.repeat, args.stress,
