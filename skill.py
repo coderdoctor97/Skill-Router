@@ -41,6 +41,8 @@ CLI:
     python3 skill.py validate [--root DIR]
     python3 skill.py benchmark [--gold PATH] [--root DIR]
     python3 skill.py stats
+    python3 skill.py doctor [--root DIR]
+    python3 skill.py --version
 
 Default ROOT is the directory containing this file. All thresholds and weights
 live in CONFIG / RANK_WEIGHTS / CHEAP_WEIGHTS below and can be overridden with
@@ -1401,6 +1403,25 @@ def run_benchmark_gold(gold_path: Path, root: Path | None = None) -> dict:
 
 
 # --------------------------------------------------------------------------
+# Diagnostics
+# --------------------------------------------------------------------------
+def doctor(root: Path | None = None) -> dict:
+    """Return actionable health information without changing the filesystem."""
+    root_path = (root or DEFAULT_ROOT).resolve()
+    report = validate_all(root_path)
+    required = [root_path / ROUTER_FILENAME, root_path / SKILLS_DIR_NAME,
+                root_path / REGISTRY_DIR_NAME / ROUTING_MANIFEST_FILENAME]
+    missing = [str(p) for p in required if not p.exists()]
+    report["root"] = str(root_path)
+    report["version"] = VERSION
+    report["missing"] = missing
+    report["ok"] = report["ok"] and not missing
+    if missing:
+        report["errors"].append("installation is incomplete; run bootstrap or install.py")
+    return report
+
+
+# --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
 def _usage() -> str:
@@ -1415,6 +1436,8 @@ def _usage() -> str:
         "  python3 skill.py validate [--root DIR]               validate manifests + registry + drift (exit 0/1)\n"
         "  python3 skill.py benchmark [--gold PATH]             run the gold-set benchmark\n"
         "  python3 skill.py stats                               print routing stats (cache, metadata bytes)\n"
+        "  python3 skill.py doctor [--root DIR]                 diagnose installation and generated metadata\n"
+        "  python3 skill.py --version                            print the router version\n"
     )
 
 
@@ -1452,6 +1475,9 @@ def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help"):
         print(_usage())
+        return 0
+    if argv[0] in ("--version", "-V"):
+        print(VERSION)
         return 0
     a = _parse_args(argv)
     cmd = a["cmd"]
@@ -1496,6 +1522,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\naccuracy: {ok}/{n} = {round(ok / n, 3)}")
     elif cmd == "stats":
         print(json.dumps(get_stats(), indent=2))
+    elif cmd == "doctor":
+        report = doctor(a["root"])
+        print(json.dumps(report, indent=2))
+        return 0 if report["ok"] else 1
     else:
         print(f"unknown command: {cmd}", file=sys.stderr)
         print(_usage(), file=sys.stderr)
