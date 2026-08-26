@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test runner for the Skill_by_Satya router regression suite.
+"""Test runner for the Skill Router regression suite.
 
 Usage:  python3 tests/run_tests.py
 """

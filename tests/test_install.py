@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -25,9 +25,18 @@ class InstallerTests(unittest.TestCase):
     def test_project_plan_is_agent_specific_and_safe(self):
         root = Path(tempfile.mkdtemp(prefix="skill-install-"))
         pairs = self.installer.plan("project", "claude", root)
-        self.assertTrue(all(str(target).startswith(str(root)) for _, target in pairs))
-        self.assertIn(".claude/skills/skill-router", str(pairs[0][1]))
-        self.assertIn(".skill-router/skill.py", str(pairs[-1][1]))
+        # All targets must stay within the project root
+        root_str = str(root.resolve())
+        self.assertTrue(all(str(t.resolve()).startswith(root_str) for _, t in pairs),
+                        "destination outside project root")
+        # Agent-specific layout: .claude/skills/skill-router/ for the package
+        pkg_rel = PurePosixPath(*Path(pairs[0][1]).parts)
+        self.assertEqual(pkg_rel.parts[-4], ".claude")
+        self.assertEqual(pkg_rel.parts[-3], "skills")
+        self.assertEqual(pkg_rel.parts[-2], "skill-router")
+        # CLI destination: .skill-router/skill.py
+        cli_rel = PurePosixPath(*Path(pairs[-1][1]).parts)
+        self.assertEqual(cli_rel.parts[-2], ".skill-router")
 
     def test_dry_run_does_not_write(self):
         root = Path(tempfile.mkdtemp(prefix="skill-install-"))

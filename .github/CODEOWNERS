@@ -1,0 +1,26 @@
+# Skill Router Owners
+
+Core routing engine and CLI:
+* @coderdoctor97 skill.py
+
+Installer:
+* @coderdoctor97 install.py
+
+Tests and benchmarks:
+* @coderdoctor97 tests/
+* @coderdoctor97 benchmarks/
+
+CI/CD and repository configuration:
+* @coderdoctor97 .github/
+
+Documentation:
+* @coderdoctor97 README.md
+* @coderdoctor97 SKILL.md
+* @coderdoctor97 docs/
+* @coderdoctor97 CONTRIBUTING.md
+* @coderdoctor97 CHANGELOG.md
+* @coderdoctor97 SECURITY.md
+
+Packaging and manifest:
+* @coderdoctor97 manifest.json
+* @coderdoctor97 pyproject.toml (when added)

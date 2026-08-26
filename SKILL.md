@@ -4,7 +4,7 @@ description: A meta-skill that installs and maintains a deterministic two-stage 
 commands: [bootstrap, sync, discover, list, route, validate, doctor, benchmark]
 ---
 
-# Skill_by_Satya V2
+# Skill Router
 
 > A portable meta-skill: install a deterministic two-stage skill router into
 > any agent repository, then keep its routing metadata in sync as skills change.
@@ -32,7 +32,7 @@ and the smallest acceptable risk of wrong routing.**
 | `no_route` | nothing sufficiently relevant | handle directly or ask |
 
 A route is never forced on a vague match. Full V1→V2 rationale, benchmark,
-and measurements: see [`UPGRADE-REPORT.md`](UPGRADE-REPORT.md).
+and measurements: see [`documentions.md`](documentions.md).
 
 ## Environment
 
@@ -162,10 +162,7 @@ Override at runtime with a JSON file via the `SKILL_ROUTER_CONFIG` env var.
 
 ## Reference
 
-- `UPGRADE-REPORT.md` — V1→V2 architecture comparison, benchmark results,
-  token/latency measurements, limitations, usage.
-- `documentions.md` — build history, failures, and lessons (read it before
-  modifying the router).
+- `documentions.md` — build history, failures, and lessons (read it before modifying the router).
 - `examples/sample-router/README.md` — layer responsibilities, pseudocode,
   invariants.
 - `benchmarks/` — gold set, corpus, benchmark runner.

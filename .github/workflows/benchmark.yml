@@ -1,0 +1,44 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Run benchmark
+        run: |
+          python skill.py benchmark --repeat 3 | tee benchmark-output.txt
+
+      - name: Check for regressions
+        run: |
+          # Parse accuracy from benchmark output — fail if it drops below baseline
+          ACC=$(python skill.py benchmark --repeat 3 2>&1 | grep "^accuracy:" | awk '{print $2}' | cut -d'=' -f1 | tr -d ' ')
+          echo "Accuracy: $ACC"
+          python -c "
+          import sys
+          acc = float('$ACC'.split('/')[0]) / float('$ACC'.split('/')[1])
+          if acc < 1.0:
+              print(f'REGRESSION: accuracy dropped to {acc}')
+              sys.exit(1)
+          print(f'Benchmark passed: accuracy = {acc}')
+          "
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          retention-days: 30
+        continue-on-error: true

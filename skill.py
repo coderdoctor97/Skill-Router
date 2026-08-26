@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-skill.py — Skill_by_Satya V2 Portable Skill Router
+skill.py — Skill Router V2 Portable Skill Router
 
 V2 routing mission (unchanged from V1): given a large installed skill library,
 identify the most appropriate skill(s) for a user's request WITHOUT reading the
@@ -63,6 +63,19 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Ensure the repo root is on sys.path so the models sibling module can be
+# found when skill.py is loaded via importlib (benchmarks, tests, packaging).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+# Import model layer (extracted to models.py; kept here as aliases for
+# backward compatibility with any external imports).
+from models import (  # noqa: E402
+    REQUIRED_MANIFEST_FIELDS,
+    Skill,
+    load_manifest,
+    manifest_fingerprint,
+)
+
 VERSION = "2.0.0"
 
 DEFAULT_ROOT = Path(__file__).resolve().parent
@@ -80,7 +93,7 @@ CACHE_FILENAME = ".route-cache.json"
 REGISTRY_SCHEMA_VERSION = 1
 ROUTING_MANIFEST_SCHEMA_VERSION = 2
 
-CONTRACT_MARKER = "<!-- Skill_by_Satya:routing-contract -->"
+CONTRACT_MARKER = "<!-- Skill Router:routing-contract -->"
 
 # --------------------------------------------------------------------------
 # Config (configurable; override with SKILL_ROUTER_CONFIG=<path-to-json>)
@@ -261,99 +274,6 @@ def reset_stats() -> None:
 
 def get_stats() -> dict:
     return dict(_STATS)
-
-
-# --------------------------------------------------------------------------
-# Skill model + manifest loading (V1 and V2 manifests both accepted)
-# --------------------------------------------------------------------------
-REQUIRED_MANIFEST_FIELDS = ("name", "description", "keywords", "aliases",
-                            "capabilities", "intents", "commands")
-
-
-@dataclass
-class Skill:
-    name: str
-    description: str
-    keywords: list[str] = field(default_factory=list)
-    aliases: list[str] = field(default_factory=list)
-    capabilities: list[str] = field(default_factory=list)
-    use_when: list[str] = field(default_factory=list)
-    not_when: list[str] = field(default_factory=list)
-    objects: list[str] = field(default_factory=list)
-    actions: list[str] = field(default_factory=list)
-    conflicts_with: list[str] = field(default_factory=list)
-    intents: dict[str, list[str]] = field(default_factory=dict)
-    commands: list[dict] = field(default_factory=list)
-    manifest_path: str = ""
-    skill_dir: str = ""
-    bootstrap_generated: bool = False
-
-    @property
-    def command_names(self) -> list[str]:
-        return [c["name"] for c in self.commands]
-
-
-def load_manifest(path: Path) -> Skill:
-    """Load and structurally validate one manifest.json into a Skill."""
-    with open(path, encoding="utf-8") as fh:
-        data = json.load(fh)
-    missing = [k for k in REQUIRED_MANIFEST_FIELDS if k not in data]
-    if missing:
-        raise ValueError(f"{path}: missing required fields {missing}")
-    for key, types in (("description", str), ("keywords", list), ("aliases", list),
-                       ("capabilities", list), ("intents", dict), ("commands", list)):
-        if not isinstance(data.get(key), types):
-            raise ValueError(f"{path}: field '{key}' must be {types.__name__}")
-
-    commands = []
-    for cmd in data["commands"]:
-        if isinstance(cmd, str):
-            cmd = {"name": cmd}
-        if not isinstance(cmd, dict) or not cmd.get("name"):
-            raise ValueError(f"{path}: command entries need a 'name'")
-        commands.append({
-            "name": str(cmd["name"]),
-            "syntax": str(cmd.get("syntax", "")),
-            "description": str(cmd.get("description", "")),
-            "keywords": list(cmd.get("keywords", []) or []),
-        })
-    if not commands:
-        raise ValueError(f"{path}: at least one command is required")
-    names = [c["name"] for c in commands]
-    if len(names) != len(set(names)):
-        raise ValueError(f"{path}: duplicate command names {names}")
-
-    return Skill(
-        name=str(data["name"]),
-        description=str(data["description"]),
-        keywords=[str(k) for k in data["keywords"]],
-        aliases=[str(a) for a in data["aliases"]],
-        capabilities=[str(c) for c in data["capabilities"]],
-        use_when=[str(x) for x in data.get("use_when", []) or []],
-        not_when=[str(x) for x in data.get("not_when", []) or []],
-        objects=[str(x) for x in data.get("objects", []) or []],
-        actions=[str(x) for x in data.get("actions", []) or []],
-        conflicts_with=[str(x) for x in data.get("conflicts_with", []) or []],
-        intents={str(k): [str(p) for p in v] for k, v in data["intents"].items()},
-        commands=commands,
-        manifest_path=str(path),
-        skill_dir=str(path.parent),
-        bootstrap_generated=bool(data.get("_bootstrap", {}).get("generated")),
-    )
-
-
-def manifest_fingerprint(path: Path) -> str:
-    """Stable fingerprint of a manifest's routing-relevant content."""
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return "unreadable"
-    keys = ["name", "description", "keywords", "aliases", "capabilities",
-            "use_when", "not_when", "objects", "actions", "intents",
-            "conflicts_with", "commands"]
-    blob = json.dumps({k: data.get(k) for k in keys}, sort_keys=True,
-                      separators=(",", ":"))
-    return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
 
 
 def skill_folders(root: Path | None = None) -> list[Path]:
@@ -1223,7 +1143,7 @@ def validate_all(root: Path | None = None) -> dict:
 def _contract_section() -> str:
     return (
         f"{CONTRACT_MARKER}\n"
-        "# Skill Router & Dynamic Skill Registry (Skill_by_Satya V2)\n"
+        "# Skill Router V2\n"
         "\n"
         "This repository has a two-stage skill router. `skill.py` reads a\n"
         "compact generated routing manifest, filters candidates cheaply, ranks\n"
@@ -1363,8 +1283,8 @@ def sync(root: Path | None = None) -> dict:
 # --------------------------------------------------------------------------
 def run_benchmark_gold(gold_path: Path, root: Path | None = None) -> dict:
     import tempfile as _tf
-    cases = json.loads(gold_path.read_text(encoding="utf-8"))["cases"]
-    # Route against the corpus used by the gold set (repo benchmarks/corpus)
+    import time as _time
+    cases_in = json.loads(gold_path.read_text(encoding="utf-8"))["cases"]
     corpus = DEFAULT_ROOT / "benchmarks" / "corpus" / "skills"
     scratch = Path(_tf.mkdtemp(prefix="skill-bench-"))
     if corpus.is_dir():
@@ -1386,20 +1306,32 @@ def run_benchmark_gold(gold_path: Path, root: Path | None = None) -> dict:
         return True
 
     results = []
-    for case in cases:
+    latencies: list[float] = []
+    for case in cases_in:
+        t0 = _time.perf_counter()
         payload = route(case["prompt"], root=scratch)
+        ms = (_time.perf_counter() - t0) * 1000.0
+        latencies.append(ms)
         entry = {
             "id": case["id"], "expected": case["expected"],
             "expected_skills": case.get("skills") or [],
             "decision": payload["decision"], "skill": payload["skill"],
             "skills": payload["skills"],
             "candidates": payload.get("candidates", []),
+            "ms": round(ms, 3),
         }
         entry["ok"] = case_ok(entry)
         results.append(entry)
     n = len(results)
     ok = sum(1 for r in results if r["ok"])
-    return {"cases": results, "root": str(scratch), "ok": ok, "total": n}
+    latencies.sort()
+    return {
+        "cases": results, "root": str(scratch),
+        "ok": ok, "total": n,
+        "accuracy": round(ok / n, 4) if n else 0.0,
+        "avg_latency_ms": round(sum(latencies) / len(latencies), 3) if latencies else 0.0,
+        "latency_p95_ms": round(latencies[int(len(latencies) * 0.95)], 3) if latencies else 0.0,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -1426,7 +1358,7 @@ def doctor(root: Path | None = None) -> dict:
 # --------------------------------------------------------------------------
 def _usage() -> str:
     return (
-        "skill.py — Portable Skill Router V2 (Skill_by_Satya)\n\n"
+        "skill.py — Portable Skill Router V2\n\n"
         "usage:\n"
         "  python3 skill.py bootstrap [--root DIR] [--force]    establish the routing environment\n"
         "  python3 skill.py sync [--root DIR]                   idempotent rebuild registry + routing manifest + validate\n"
@@ -1501,7 +1433,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{len(skills)} skills")
     elif cmd == "route":
         if not a["request"]:
-            print("error: route needs a request string", file=sys.stderr)
+            print("error: 'route' needs a request string.", file=sys.stderr)
+            print("  usage: python3 skill.py route \"<your request>\" --root <path>",
+                  file=sys.stderr)
             return 2
         result = route(a["request"], root=a["root"], debug=a["debug"],
                        use_cache=not a["no_cache"])
@@ -1518,8 +1452,11 @@ def main(argv: list[str] | None = None) -> int:
         for c in out["cases"]:
             mark = "OK " if c["ok"] else "XX "
             print(f"{mark}{c['id']:8s} exp={c['expected']:9s} "
-                  f"got={c['decision']:9s} skills={c['skills']}")
-        print(f"\naccuracy: {ok}/{n} = {round(ok / n, 3)}")
+                  f"got={c['decision']:9s} skills={c['skills']} "
+                  f"({c['ms']} ms)")
+        print(f"\naccuracy: {ok}/{n} = {out['accuracy']:.3f}")
+        print(f"avg latency: {out['avg_latency_ms']:.3f} ms")
+        print(f"p95 latency: {out['latency_p95_ms']:.3f} ms")
     elif cmd == "stats":
         print(json.dumps(get_stats(), indent=2))
     elif cmd == "doctor":

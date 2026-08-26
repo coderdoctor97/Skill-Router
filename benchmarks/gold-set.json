@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "note": "Gold-set benchmark for Skill_by_Satya routing. Decisions: route | ambiguous | no_route. For route cases, `skills` is the expected skill or minimal ordered skill set (order matters when `ordered: true`). `alternatives` are acceptable second choices. Scored: decision accuracy, top-1 (route skill in skills/alternatives), top-3 recall (expected skill appears among returned candidates/alternatives), false-route rate, false-no-route rate, ambiguity precision, multi-skill correctness.",
+  "note": "Gold-set benchmark for Skill Router routing. Decisions: route | ambiguous | no_route. For route cases, `skills` is the expected skill or minimal ordered skill set (order matters when `ordered: true`). `alternatives` are acceptable second choices. Scored: decision accuracy, top-1 (route skill in skills/alternatives), top-3 recall (expected skill appears among returned candidates/alternatives), false-route rate, false-no-route rate, ambiguity precision, multi-skill correctness.",
   "cases": [
     {
       "id": "pos-01",

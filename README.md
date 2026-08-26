@@ -235,9 +235,12 @@ The environment configuration is process-local and overrides built-in defaults. 
 ├── skill-registry/                   # generated indexes (in target repos)
 ├── templates/                        # manifest and agent contract templates
 ├── benchmarks/                       # corpus, gold set, benchmark runner
+├── docs/                             # detailed documentation
 ├── tests/                            # regression tests
 └── assets/icon/                      # official supplied artwork
 ```
+
+For detailed documentation, see [`docs/`](docs/).
 
 ## Troubleshooting
 

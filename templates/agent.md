@@ -1,5 +1,5 @@
-<!-- Skill_by_Satya:routing-contract -->
-# Skill Router & Dynamic Skill Registry (Skill_by_Satya V2)
+<!-- Skill Router:routing-contract -->
+# Skill Router V2
 
 This repository has a two-stage skill router. `skill.py` reads a compact
 generated routing manifest, filters candidates cheaply, ranks the candidate
@@ -50,4 +50,4 @@ synchronize the routing environment:
 * `skill.py`: filtering, ranking, decision, validation, cache.
 * You: interpret, sanity-check, decide, ask when ambiguous, execute.
 
-<!-- Skill_by_Satya:routing-contract -->
+<!-- Skill Router:routing-contract -->
