@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/branding/skill-router-logo.png" alt="Skill Router" width="720" />
+  <img src="./assets/icon/github_branding.png" alt="Skill Router" width="720" />
 </p>
 
 <p align="center"><strong>Deterministic skill discovery and routing for AI coding agents.</strong></p>
@@ -236,7 +236,7 @@ The environment configuration is process-local and overrides built-in defaults. 
 ├── templates/                        # manifest and agent contract templates
 ├── benchmarks/                       # corpus, gold set, benchmark runner
 ├── tests/                            # regression tests
-└── assets/branding/                  # official supplied artwork
+└── assets/icon/                      # official supplied artwork
 ```
 
 ## Troubleshooting
