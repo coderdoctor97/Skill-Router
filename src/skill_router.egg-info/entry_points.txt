@@ -1,0 +1,2 @@
+[console_scripts]
+skill-router = skill_router:main
