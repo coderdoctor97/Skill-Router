@@ -1,0 +1,72 @@
+{
+  "name": "antislop-heavy",
+  "description": "Strict de-slop for formal and academic documents: removes every slop phrase and flattens ornamental language in papers, theses, and reports.",
+  "keywords": [
+    "strict",
+    "academic",
+    "thesis",
+    "formal",
+    "ornamental language"
+  ],
+  "aliases": [
+    "antislop heavy",
+    "strict de-slop",
+    "academic de-slop"
+  ],
+  "capabilities": [
+    "strict slop removal",
+    "formal writing cleanup",
+    "academic tone"
+  ],
+  "use_when": [
+    "de-slop an academic paper",
+    "remove cliches from a thesis",
+    "strict de-slop for a report",
+    "formal document cleanup",
+    "remove slop from an academic paper"
+  ],
+  "not_when": [
+    "casual marketing copy",
+    "quick email",
+    "chat message"
+  ],
+  "objects": [
+    "paper",
+    "thesis",
+    "report",
+    "academic text"
+  ],
+  "actions": [
+    "de-slop",
+    "deslop",
+    "tighten",
+    "formalize",
+    "strip"
+  ],
+  "intents": {
+    "strict_deslop": [
+      "strict de-slop",
+      "academic de-slop",
+      "formal de-slop",
+      "remove slop phrases"
+    ]
+  },
+  "conflicts_with": [
+    "antislop"
+  ],
+  "commands": [
+    {
+      "name": "de-slop-strict",
+      "syntax": "de-slop-strict <document>",
+      "description": "Strict de-slop for formal/academic documents.",
+      "keywords": [
+        "strict",
+        "academic"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

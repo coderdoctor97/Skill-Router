@@ -1,0 +1,70 @@
+{
+  "name": "writing-beats",
+  "description": "Structural review of long-form writing: chapter-level beats, pacing, flow, and outline coherence for books and long articles.",
+  "keywords": [
+    "beats",
+    "pacing",
+    "structure",
+    "outline",
+    "chapters"
+  ],
+  "aliases": [
+    "writing beats",
+    "beat review",
+    "structure review"
+  ],
+  "capabilities": [
+    "pacing analysis",
+    "structural review",
+    "beat mapping"
+  ],
+  "use_when": [
+    "review chapter structure",
+    "check the pacing of my book",
+    "outline the beats",
+    "long form structure review"
+  ],
+  "not_when": [
+    "line edits",
+    "grammar fixes",
+    "single paragraph"
+  ],
+  "objects": [
+    "book",
+    "chapter",
+    "article",
+    "long form"
+  ],
+  "actions": [
+    "structure",
+    "outline",
+    "review",
+    "map"
+  ],
+  "intents": {
+    "structure": [
+      "review chapter structure",
+      "check pacing",
+      "outline beats"
+    ]
+  },
+  "conflicts_with": [
+    "impeccable"
+  ],
+  "commands": [
+    {
+      "name": "review-beats",
+      "syntax": "review-beats <outline>",
+      "description": "Review chapter-level beats and pacing.",
+      "keywords": [
+        "beats",
+        "pacing",
+        "structure"
+      ]
+    }
+  ],
+  "_bootstrap": {
+    "generated": false,
+    "needs_review": false
+  }
+}

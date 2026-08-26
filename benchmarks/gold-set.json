@@ -1,0 +1,409 @@
+{
+  "schema_version": 1,
+  "note": "Gold-set benchmark for Skill_by_Satya routing. Decisions: route | ambiguous | no_route. For route cases, `skills` is the expected skill or minimal ordered skill set (order matters when `ordered: true`). `alternatives` are acceptable second choices. Scored: decision accuracy, top-1 (route skill in skills/alternatives), top-3 recall (expected skill appears among returned candidates/alternatives), false-route rate, false-no-route rate, ambiguity precision, multi-skill correctness.",
+  "cases": [
+    {
+      "id": "pos-01",
+      "category": "positive",
+      "prompt": "proofread this paragraph and fix the grammar mistakes",
+      "expected": "route",
+      "skills": [
+        "impeccable"
+      ],
+      "alternatives": [],
+      "reason": "Explicit proofreading + grammar fix -> impeccable."
+    },
+    {
+      "id": "pos-02",
+      "category": "positive",
+      "prompt": "de-slop my email, remove the ai cliches",
+      "expected": "route",
+      "skills": [
+        "antislop"
+      ],
+      "alternatives": [],
+      "reason": "De-slop + remove ai cliches -> antislop."
+    },
+    {
+      "id": "pos-03",
+      "category": "positive",
+      "prompt": "does this prose sound like a human wrote it or a machine?",
+      "expected": "route",
+      "skills": [
+        "hallmark"
+      ],
+      "alternatives": [],
+      "reason": "Judging human vs machine prose -> hallmark."
+    },
+    {
+      "id": "pos-04",
+      "category": "positive",
+      "prompt": "audit my frontend for visual design issues",
+      "expected": "route",
+      "skills": [
+        "design-audit"
+      ],
+      "alternatives": [],
+      "reason": "Frontend visual design audit -> design-audit."
+    },
+    {
+      "id": "pos-05",
+      "category": "positive",
+      "prompt": "check the accessibility of our dashboard against wcag",
+      "expected": "route",
+      "skills": [
+        "accessibility-review"
+      ],
+      "alternatives": [],
+      "reason": "WCAG accessibility check on a dashboard -> accessibility-review (specificity beats broad design-audit)."
+    },
+    {
+      "id": "pos-06",
+      "category": "positive",
+      "prompt": "review this pull request for unnecessary complexity",
+      "expected": "route",
+      "skills": [
+        "ponytail"
+      ],
+      "alternatives": [],
+      "reason": "Diff complexity review -> ponytail."
+    },
+    {
+      "id": "pos-07",
+      "category": "positive",
+      "prompt": "write a readme for our new api client",
+      "expected": "route",
+      "skills": [
+        "docs-writing"
+      ],
+      "alternatives": [],
+      "reason": "README for an API client -> docs-writing."
+    },
+    {
+      "id": "pos-08",
+      "category": "positive",
+      "prompt": "draft marketing copy for the landing page",
+      "expected": "route",
+      "skills": [
+        "copywriting"
+      ],
+      "alternatives": [],
+      "reason": "Marketing copy for a landing page -> copywriting."
+    },
+    {
+      "id": "pos-09",
+      "category": "positive",
+      "prompt": "set up vite and optimize the bundle",
+      "expected": "route",
+      "skills": [
+        "frontend-build"
+      ],
+      "alternatives": [],
+      "reason": "Vite/bundle work -> frontend-build."
+    },
+    {
+      "id": "pos-10",
+      "category": "positive",
+      "prompt": "scan our login endpoint for vulnerabilities",
+      "expected": "route",
+      "skills": [
+        "security-review"
+      ],
+      "alternatives": [],
+      "reason": "Endpoint vulnerability scan -> security-review."
+    },
+    {
+      "id": "pos-11",
+      "category": "positive",
+      "prompt": "review the pacing of my book chapters",
+      "expected": "route",
+      "skills": [
+        "writing-beats"
+      ],
+      "alternatives": [],
+      "reason": "Book pacing/structure -> writing-beats."
+    },
+    {
+      "id": "pos-12",
+      "category": "positive",
+      "prompt": "strict de-slop for my thesis",
+      "expected": "route",
+      "skills": [
+        "antislop-heavy"
+      ],
+      "alternatives": [],
+      "reason": "Strict de-slop of a thesis -> antislop-heavy, not antislop."
+    },
+    {
+      "id": "pos-13",
+      "category": "positive",
+      "prompt": "build a chart from this dataset",
+      "expected": "route",
+      "skills": [
+        "data-viz"
+      ],
+      "alternatives": [],
+      "reason": "Chart from dataset -> data-viz."
+    },
+    {
+      "id": "pos-14",
+      "category": "positive",
+      "prompt": "write a playwright script for the login flow",
+      "expected": "route",
+      "skills": [
+        "browser-automation"
+      ],
+      "alternatives": [],
+      "reason": "Playwright e2e script -> browser-automation."
+    },
+    {
+      "id": "nn-01",
+      "category": "near_neighbor",
+      "prompt": "the copy is grammatically fine but full of slop like delve and seamless, clean it up",
+      "expected": "route",
+      "skills": [
+        "antislop"
+      ],
+      "alternatives": [],
+      "reason": "Slop-word removal, not grammar: antislop beats impeccable."
+    },
+    {
+      "id": "nn-02",
+      "category": "near_neighbor",
+      "prompt": "fix the punctuation and spelling in this essay",
+      "expected": "route",
+      "skills": [
+        "impeccable"
+      ],
+      "alternatives": [],
+      "reason": "Mechanics, not voice judgment: impeccable beats hallmark."
+    },
+    {
+      "id": "nn-03",
+      "category": "near_neighbor",
+      "prompt": "judge whether this chapter reads like a person wrote it",
+      "expected": "route",
+      "skills": [
+        "hallmark"
+      ],
+      "alternatives": [],
+      "reason": "Human-voice judgment: hallmark beats impeccable and writing-beats."
+    },
+    {
+      "id": "nn-04",
+      "category": "near_neighbor",
+      "prompt": "remove every slop phrase from the academic paper",
+      "expected": "route",
+      "skills": [
+        "antislop-heavy"
+      ],
+      "alternatives": [
+        "antislop"
+      ],
+      "reason": "Formal/academic de-slop: heavy variant preferred; plain antislop acceptable."
+    },
+    {
+      "id": "nn-05",
+      "category": "near_neighbor",
+      "prompt": "my landing page needs a visual and ux review",
+      "expected": "route",
+      "skills": [
+        "design-audit"
+      ],
+      "alternatives": [],
+      "reason": "Visual+UX: design-audit, not accessibility-review or css-protips."
+    },
+    {
+      "id": "nn-06",
+      "category": "near_neighbor",
+      "prompt": "check contrast, alt text, and screen reader flow on the form",
+      "expected": "route",
+      "skills": [
+        "accessibility-review"
+      ],
+      "alternatives": [],
+      "reason": "Specific a11y checks: accessibility-review beats the broader design-audit."
+    },
+    {
+      "id": "nn-07",
+      "category": "near_neighbor",
+      "prompt": "this diff is hard to follow, too much indirection",
+      "expected": "route",
+      "skills": [
+        "ponytail"
+      ],
+      "alternatives": [],
+      "reason": "Complexity complaint: ponytail, not backend-review."
+    },
+    {
+      "id": "nn-08",
+      "category": "near_neighbor",
+      "prompt": "review our microservice architecture and data flow",
+      "expected": "route",
+      "skills": [
+        "backend-review"
+      ],
+      "alternatives": [],
+      "reason": "Architecture/data flow: backend-review, not ponytail."
+    },
+    {
+      "id": "amb-01",
+      "category": "ambiguous",
+      "prompt": "review my writing",
+      "expected": "ambiguous",
+      "skills": [
+        "hallmark",
+        "impeccable",
+        "antislop"
+      ],
+      "alternatives": [],
+      "reason": "Too vague: any of the writing-review skills plausibly fits."
+    },
+    {
+      "id": "amb-02",
+      "category": "ambiguous",
+      "prompt": "help me with my frontend",
+      "expected": "ambiguous",
+      "skills": [
+        "design-audit",
+        "css-protips",
+        "accessibility-review",
+        "frontend-build"
+      ],
+      "alternatives": [],
+      "reason": "Frontend domain without an action: several skills genuinely plausible."
+    },
+    {
+      "id": "amb-03",
+      "category": "ambiguous",
+      "prompt": "review the code in this repo",
+      "expected": "ambiguous",
+      "skills": [
+        "ponytail",
+        "security-review",
+        "backend-review"
+      ],
+      "alternatives": [],
+      "reason": "Code review without a focus: complexity, security, or architecture."
+    },
+    {
+      "id": "amb-04",
+      "category": "ambiguous",
+      "prompt": "make my text better",
+      "expected": "ambiguous",
+      "skills": [
+        "impeccable",
+        "hallmark",
+        "antislop"
+      ],
+      "alternatives": [],
+      "reason": "No signal which kind of improvement is wanted."
+    },
+    {
+      "id": "nr-01",
+      "category": "no_route",
+      "prompt": "what is the weather like in berlin tomorrow?",
+      "expected": "no_route",
+      "skills": [],
+      "alternatives": [],
+      "reason": "Weather forecast: no installed skill applies."
+    },
+    {
+      "id": "nr-02",
+      "category": "no_route",
+      "prompt": "solve this quadratic equation for x",
+      "expected": "no_route",
+      "skills": [],
+      "alternatives": [],
+      "reason": "Math: no installed skill applies."
+    },
+    {
+      "id": "nr-03",
+      "category": "no_route",
+      "prompt": "book a flight to tokyo",
+      "expected": "no_route",
+      "skills": [],
+      "alternatives": [],
+      "reason": "Travel booking: no installed skill applies."
+    },
+    {
+      "id": "ms-01",
+      "category": "multi_skill",
+      "prompt": "rewrite the landing page copy, then de-slop it",
+      "expected": "route",
+      "skills": [
+        "copywriting",
+        "antislop"
+      ],
+      "alternatives": [],
+      "ordered": true,
+      "reason": "Two coordinated tasks: copywriting then antislop, in order."
+    },
+    {
+      "id": "ms-02",
+      "category": "multi_skill",
+      "prompt": "review this pr for complexity and check the new endpoint for vulnerabilities",
+      "expected": "route",
+      "skills": [
+        "ponytail",
+        "security-review"
+      ],
+      "alternatives": [],
+      "reason": "Complexity review + vulnerability check: two distinct skills."
+    },
+    {
+      "id": "ms-03",
+      "category": "multi_skill",
+      "prompt": "write a readme and draft the marketing blurb for the api",
+      "expected": "route",
+      "skills": [
+        "docs-writing",
+        "copywriting"
+      ],
+      "alternatives": [],
+      "reason": "Technical docs + marketing copy: two distinct skills."
+    },
+    {
+      "id": "adv-01",
+      "category": "adversarial",
+      "prompt": "make my code impeccable",
+      "expected": "ambiguous",
+      "skills": [
+        "ponytail"
+      ],
+      "alternatives": [],
+      "reason": "'Impeccable' is a writing-skill name but the object is code. V1 routed here on alias+keyword to a WRITING skill (wrong). V2 must exclude impeccable on object mismatch and surface only the code-adjacent candidate for host-AI confirmation."
+    },
+    {
+      "id": "adv-02",
+      "category": "adversarial",
+      "prompt": "check the security of my css",
+      "expected": "ambiguous",
+      "skills": [
+        "css-protips"
+      ],
+      "alternatives": [],
+      "reason": "Neither skill truly fits, but css-protips is the only surfaceable candidate. V2 must NOT invent a confident route; host AI confirms."
+    },
+    {
+      "id": "adv-03",
+      "category": "adversarial",
+      "prompt": "run a hallmark check on my react component",
+      "expected": "no_route",
+      "skills": [],
+      "alternatives": [],
+      "reason": "'Hallmark' is a prose skill; the object is a react component. V1 routed to hallmark on name+keyword (wrong). V2 must exclude hallmark on object mismatch, and the only incidental weak match stays below the floor -> NO_ROUTE."
+    },
+    {
+      "id": "adv-04",
+      "category": "adversarial",
+      "prompt": "write a design review of my backend api",
+      "expected": "route",
+      "skills": [
+        "backend-review"
+      ],
+      "alternatives": [],
+      "reason": "'Design review' misleads toward design-audit; the object is the backend api. V1 misses it entirely (strict token matching); V2 routes to backend-review."
+    }
+  ]
+}
