@@ -12,7 +12,7 @@
 | Windows command not found | Use `py install.py` and `py .skill-router\\skill.py ...`. |
 | `no_route` for a known skill | The skill's `use_when` triggers may not cover the request phrasing. Check the manifest. |
 | `ambiguous` when one skill should win | Overlapping skills may have incomplete or conflicting metadata. Check `use_when`, `not_when`, `objects`, and `actions`. |
-| Benchmark shows less than 100% accuracy | Check which cases fail with `--debug` output. Likely a corpus manifest gap. |
+| Benchmark shows lower than expected accuracy | Run with `--json` to see per-case output. Check corpus manifests for missing keywords or boundaries; regenerate with `sync`. |
 | Cache returns stale results | Run `sync` to regenerate the routing manifest (changes fingerprint). Use `--no-cache` to bypass. |
 
 ## Diagnosis Commands

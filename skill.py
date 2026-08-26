@@ -1363,8 +1363,8 @@ def sync(root: Path | None = None) -> dict:
 # --------------------------------------------------------------------------
 def run_benchmark_gold(gold_path: Path, root: Path | None = None) -> dict:
     import tempfile as _tf
-    cases = json.loads(gold_path.read_text(encoding="utf-8"))["cases"]
-    # Route against the corpus used by the gold set (repo benchmarks/corpus)
+    import time as _time
+    cases_in = json.loads(gold_path.read_text(encoding="utf-8"))["cases"]
     corpus = DEFAULT_ROOT / "benchmarks" / "corpus" / "skills"
     scratch = Path(_tf.mkdtemp(prefix="skill-bench-"))
     if corpus.is_dir():
@@ -1386,20 +1386,32 @@ def run_benchmark_gold(gold_path: Path, root: Path | None = None) -> dict:
         return True
 
     results = []
-    for case in cases:
+    latencies: list[float] = []
+    for case in cases_in:
+        t0 = _time.perf_counter()
         payload = route(case["prompt"], root=scratch)
+        ms = (_time.perf_counter() - t0) * 1000.0
+        latencies.append(ms)
         entry = {
             "id": case["id"], "expected": case["expected"],
             "expected_skills": case.get("skills") or [],
             "decision": payload["decision"], "skill": payload["skill"],
             "skills": payload["skills"],
             "candidates": payload.get("candidates", []),
+            "ms": round(ms, 3),
         }
         entry["ok"] = case_ok(entry)
         results.append(entry)
     n = len(results)
     ok = sum(1 for r in results if r["ok"])
-    return {"cases": results, "root": str(scratch), "ok": ok, "total": n}
+    latencies.sort()
+    return {
+        "cases": results, "root": str(scratch),
+        "ok": ok, "total": n,
+        "accuracy": round(ok / n, 4) if n else 0.0,
+        "avg_latency_ms": round(sum(latencies) / len(latencies), 3) if latencies else 0.0,
+        "latency_p95_ms": round(latencies[int(len(latencies) * 0.95)], 3) if latencies else 0.0,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -1518,8 +1530,11 @@ def main(argv: list[str] | None = None) -> int:
         for c in out["cases"]:
             mark = "OK " if c["ok"] else "XX "
             print(f"{mark}{c['id']:8s} exp={c['expected']:9s} "
-                  f"got={c['decision']:9s} skills={c['skills']}")
-        print(f"\naccuracy: {ok}/{n} = {round(ok / n, 3)}")
+                  f"got={c['decision']:9s} skills={c['skills']} "
+                  f"({c['ms']} ms)")
+        print(f"\naccuracy: {ok}/{n} = {out['accuracy']:.3f}")
+        print(f"avg latency: {out['avg_latency_ms']:.3f} ms")
+        print(f"p95 latency: {out['latency_p95_ms']:.3f} ms")
     elif cmd == "stats":
         print(json.dumps(get_stats(), indent=2))
     elif cmd == "doctor":

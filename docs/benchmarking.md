@@ -41,16 +41,19 @@ The gold set (`benchmarks/gold-set.json`) contains 36 cases:
 
 | Metric | Description |
 |---|---|
-| `decision_accuracy` | Fraction of correct route/ambiguous/no_route decisions |
+| `decision_accuracy` | Fraction of correct route/ambiguous/no_route decisions on the gold set |
 | `top1_accuracy` | Correct skill in top position (route-only) |
 | `top3_recall` | Expected skill appears in top 3 candidates |
 | `false_route_rate` | Routed when should be ambiguous/no_route |
 | `false_no_route_rate` | Returned no_route when should have routed |
 | `ambiguity_precision` | Ambiguous cases where correct skills surfaced |
+| `ambiguity_recall` | Ambiguous cases where the router returned ambiguous |
 | `multi_skill_correctness` | Ordered/unordered multi-skill accuracy |
 | `avg_latency_ms` | Mean routing latency |
+| `latency_p95_ms` | 95th-percentile routing latency |
 | `avg_output_bytes` | Mean serialized output size |
-| `avg_metadata_bytes_per_route` | Mean metadata bytes consumed |
+| `avg_metadata_bytes_per_route` | Mean metadata bytes consumed per route call |
+| `metadata_reduction_pct` | Fraction of full-corpus manifest size not loaded per route |
 | `cache_hit_rate` | Cache efficiency |
 
 ## Benchmark Corpus
@@ -72,10 +75,31 @@ To reproduce results:
 1. Clone the repository.
 2. Ensure Python 3.10+ is installed.
 3. Run `python3 skill.py benchmark` from the repository root.
-4. For external validation, run `python3 benchmarks/run_benchmark.py`.
+4. For full metric output, run `python3 benchmarks/run_benchmark.py`.
 
 Results are deterministic given the same corpus and gold set. Latency
 measurements include Python process overhead; actual routing time is a subset.
+
+## Regression protection
+
+The external benchmark runner (`benchmarks/run_benchmark.py`) supports
+regression detection:
+
+```bash
+# Save the current results as a baseline
+python3 benchmarks/run_benchmark.py --save-baseline
+
+# Future runs compare against the saved baseline
+python3 benchmarks/run_benchmark.py --baseline benchmark-baseline.json
+
+# Hard gate: exit 2 if any metric breaches its threshold
+python3 benchmarks/run_benchmark.py --gate
+```
+
+Thresholds are documented in `benchmarks/run_benchmark.py` under
+`REGRESSION_THRESHOLDS`. They are conservative and intended to catch
+obvious regressions, not block legitimate improvements. Update thresholds
+deliberately and document the rationale.
 
 ## Known Limitations
 
